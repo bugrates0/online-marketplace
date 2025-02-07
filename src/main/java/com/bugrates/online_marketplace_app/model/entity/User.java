@@ -1,4 +1,4 @@
-package com.bugrates.online_marketplace_app.model;
+package com.bugrates.online_marketplace_app.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.bugrates.online_marketplace_app.model.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

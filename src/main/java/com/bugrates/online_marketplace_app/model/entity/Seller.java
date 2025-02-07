@@ -1,4 +1,4 @@
-package com.bugrates.online_marketplace_app.model;
+package com.bugrates.online_marketplace_app.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
