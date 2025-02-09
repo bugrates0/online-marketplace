@@ -39,8 +39,8 @@ public class SecurityConfiguration {
 				.csrf(customizer -> customizer.disable()
 				)
 				.authorizeHttpRequests(request ->
-					request .requestMatchers("/login", "/registerAsCustomer", "/registerAsSeller").permitAll()
-						.requestMatchers("/registerNewAdmin").hasRole(Role.ADMIN.toString())
+					request .requestMatchers("/api/v1/authentication/login", "/api/v1/authentication/register/customer", "/api/v1/authentication/register/seller").permitAll()
+						.requestMatchers("/api/v1/authentication/register/admin").hasRole(Role.ADMIN.toString())
 						.requestMatchers("/helloCustomer").hasRole(Role.CUSTOMER.toString())
 						.requestMatchers("/helloSeller").hasRole(Role.SELLER.toString())
 				)

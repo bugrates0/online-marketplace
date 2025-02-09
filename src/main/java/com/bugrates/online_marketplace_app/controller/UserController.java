@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bugrates.online_marketplace_app.model.dto.NewAdminRequest;
@@ -23,6 +24,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @Validated
+@RequestMapping("/api/v1/authentication")
 public class UserController {
 
 	private UserService userService;
@@ -31,19 +33,19 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/registerAsCustomer")
+	@PostMapping("/register/customer")
 	public ResponseEntity<NewCustomerRequest> newCustomer(@Valid @RequestBody NewCustomerRequest newCustomerRequest) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.registerAsCustomer(newCustomerRequest)); //TODO
 	}
 
-	@PostMapping("/registerAsSeller")
+	@PostMapping("/register/seller")
 	public ResponseEntity<NewSellerRequest> newSeller(@Valid @RequestBody NewSellerRequest newSellerRequest) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.registerAsSeller(newSellerRequest)); //TODO
 	}
 
-	@PostMapping("/registerNewAdmin")
+	@PostMapping("/register/admin")
 	public ResponseEntity<NewAdminRequest> newAdmin(@Valid @RequestBody NewAdminRequest newAdminRequest) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.registerNewAdmin(newAdminRequest)); //TODO
