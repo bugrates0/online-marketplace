@@ -8,10 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.bugrates.online_marketplace_app.model.dto.NewAdminRequest;
-import com.bugrates.online_marketplace_app.model.dto.NewCustomerRequest;
-import com.bugrates.online_marketplace_app.model.dto.NewSellerRequest;
-import com.bugrates.online_marketplace_app.model.dto.UserLoginRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewAdminRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewCustomerRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewSellerRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.UserLoginRequest;
 import com.bugrates.online_marketplace_app.model.entity.Admin;
 import com.bugrates.online_marketplace_app.model.entity.Customer;
 import com.bugrates.online_marketplace_app.model.entity.Seller;

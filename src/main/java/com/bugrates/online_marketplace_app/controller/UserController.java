@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bugrates.online_marketplace_app.model.dto.NewAdminRequest;
-import com.bugrates.online_marketplace_app.model.dto.NewCustomerRequest;
-import com.bugrates.online_marketplace_app.model.dto.NewSellerRequest;
-import com.bugrates.online_marketplace_app.model.dto.UserLoginRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewAdminRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewCustomerRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewSellerRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.UserLoginRequest;
 import com.bugrates.online_marketplace_app.model.entity.Seller;
 import com.bugrates.online_marketplace_app.model.entity.User;
 import com.bugrates.online_marketplace_app.service.UserService;

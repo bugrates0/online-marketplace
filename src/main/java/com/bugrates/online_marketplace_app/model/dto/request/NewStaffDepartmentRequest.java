@@ -1,4 +1,4 @@
-package com.bugrates.online_marketplace_app.model.dto;
+package com.bugrates.online_marketplace_app.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

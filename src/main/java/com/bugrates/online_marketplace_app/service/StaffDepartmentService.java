@@ -2,7 +2,7 @@ package com.bugrates.online_marketplace_app.service;
 
 import org.springframework.stereotype.Service;
 
-import com.bugrates.online_marketplace_app.model.dto.NewStaffDepartmentRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewStaffDepartmentRequest;
 import com.bugrates.online_marketplace_app.model.entity.StaffDepartment;
 import com.bugrates.online_marketplace_app.repo.StaffDepartmentRepository;
 

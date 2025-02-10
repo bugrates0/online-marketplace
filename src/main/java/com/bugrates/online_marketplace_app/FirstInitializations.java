@@ -3,8 +3,8 @@ package com.bugrates.online_marketplace_app;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.bugrates.online_marketplace_app.model.dto.NewAdminRequest;
-import com.bugrates.online_marketplace_app.model.dto.NewStaffDepartmentRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewAdminRequest;
+import com.bugrates.online_marketplace_app.model.dto.request.NewStaffDepartmentRequest;
 import com.bugrates.online_marketplace_app.model.entity.StaffDepartment;
 import com.bugrates.online_marketplace_app.service.StaffDepartmentService;
 import com.bugrates.online_marketplace_app.service.UserService;
