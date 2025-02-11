@@ -55,6 +55,11 @@ public class ProductCategoryService {
 		
 	}
 	
+	public ProductCategory findById(int categoryId) throws Exception {
+		
+		return productCategoryRepository.findById(categoryId).orElseThrow(() -> new Exception("Category not found"));
+	}
+	
 	
 	
 }
