@@ -1,7 +1,10 @@
 package com.bugrates.online_marketplace_app.model.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,16 +25,20 @@ public class Seller extends User{
 	@Column(unique = true, nullable = false)
 	private String storeAddress;
 	
+	@OneToMany(mappedBy = "seller")
+	private List<ListedProduct> listedProducts;
+	
 	public Seller() {
 	
 	}
 
-	public Seller(String storeName, String phoneNumber, String city, String storeAddress) {
+	public Seller(String storeName, String phoneNumber, String city, String storeAddress, List<ListedProduct> listedProducts) {
 		super();
 		this.storeName = storeName;
 		this.phoneNumber = phoneNumber;
 		this.city = city;
 		this.storeAddress = storeAddress;
+		this.listedProducts = listedProducts;
 	}
 
 	public String getStoreName() {
@@ -64,6 +71,14 @@ public class Seller extends User{
 
 	public void setStoreAddress(String storeAddress) {
 		this.storeAddress = storeAddress;
+	}
+
+	public List<ListedProduct> getListedProducts() {
+		return listedProducts;
+	}
+
+	public void setListedProducts(List<ListedProduct> listedProducts) {
+		this.listedProducts = listedProducts;
 	}
 	
 	

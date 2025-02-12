@@ -73,6 +73,11 @@ public class ProductService {
 
 	}
 
+	public Product findById(int productId) throws Exception {
+
+		return productRepository.findById(productId).orElseThrow(() -> new Exception("Product not found"));
+	}
+
 	public ProductResponse getProduct(int productId) throws Exception {
 
 		Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("No product")); // TODO
@@ -83,6 +88,14 @@ public class ProductService {
 		productResponse.setProductName(product.getProductName());
 
 		return productResponse;
+	}
+
+	public List<Product> getAllProducts() {
+
+		List<Product> allProducts = productRepository.findAll();
+
+		return allProducts;
+
 	}
 
 }

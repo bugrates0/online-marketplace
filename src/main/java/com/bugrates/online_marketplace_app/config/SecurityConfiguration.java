@@ -42,9 +42,10 @@ public class SecurityConfiguration {
 					request .requestMatchers("/api/v1/authentication/login", "/api/v1/authentication/register/customer", "/api/v1/authentication/register/seller").permitAll()
 						.requestMatchers("/api/v1/authentication/register/admin").hasRole(Role.ADMIN.toString())
 						.requestMatchers("/api/v1/product-categories/**").hasRole(Role.ADMIN.toString())
-						.requestMatchers("/api/v1/products/**").hasRole(Role.ADMIN.toString())
-						.requestMatchers("/helloCustomer").hasRole(Role.CUSTOMER.toString())
-						.requestMatchers("/helloSeller").hasRole(Role.SELLER.toString())
+						.requestMatchers("/api/v1/products/listed-products").hasRole(Role.CUSTOMER.toString())
+						.requestMatchers("/api/v1/products/{productId}/listed-products").hasRole(Role.SELLER.toString())
+						.requestMatchers("/api/v1/products/{productId}").hasRole(Role.ADMIN.toString())
+						
 				)
 				.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
