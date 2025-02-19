@@ -1,6 +1,7 @@
 package com.bugrates.online_marketplace_app.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -47,13 +49,16 @@ public class ListedProduct {
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
+	
+	@OneToMany(mappedBy = "listedProduct") //we can find how many carts have this product. 
+	private List<CartItem> cartItems;
 
 	public ListedProduct() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public ListedProduct(int listedProductId, String brand, String description, int price, int stockQuantity,
-			LocalDateTime createdAt, Seller seller, Product product) {
+			LocalDateTime createdAt, Seller seller, Product product, List<CartItem> cartItems) {
 		this.listedProductId = listedProductId;
 		this.brand = brand;
 		this.description = description;
@@ -62,6 +67,7 @@ public class ListedProduct {
 		this.createdAt = createdAt;
 		this.seller = seller;
 		this.product = product;
+		this.cartItems = cartItems;
 	}
 
 	public int getListedProductId() {
@@ -126,6 +132,14 @@ public class ListedProduct {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public List<CartItem> getCartItems() {
+		return cartItems;
+	}
+
+	public void setCartItems(List<CartItem> cartItems) {
+		this.cartItems = cartItems;
 	}
 	
 	

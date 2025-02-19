@@ -45,6 +45,7 @@ public class SecurityConfiguration {
 						.requestMatchers("/api/v1/products/listed-products").hasRole(Role.CUSTOMER.toString())
 						.requestMatchers("/api/v1/products/{productId}/listed-products").hasRole(Role.SELLER.toString())
 						.requestMatchers("/api/v1/products/{productId}").hasRole(Role.ADMIN.toString())
+						.requestMatchers("/api/v1/cart/**").hasRole(Role.CUSTOMER.toString())
 						
 				)
 				.httpBasic(Customizer.withDefaults())
