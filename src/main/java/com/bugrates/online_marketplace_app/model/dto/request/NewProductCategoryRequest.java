@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 
 public class NewProductCategoryRequest {
 
-	@Pattern(regexp = "^([A-Z][a-z]*(\\s[A-Z][a-z]*){0,4})$", message = "The first letters should be capitalized")
+	@Pattern(regexp = "^([A-Z][a-z]+)(\\s[A-Z][a-z]+){0,4}$", message = "The first letters should be capitalized")
 	@NotBlank(message = "Enter a valid product category name")
 	private String productCategoryName;
 

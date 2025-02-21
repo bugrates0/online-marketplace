@@ -41,12 +41,14 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(request ->
 					request .requestMatchers("/api/v1/authentication/login", "/api/v1/authentication/register/customer", "/api/v1/authentication/register/seller").permitAll()
 						.requestMatchers("/api/v1/authentication/register/admin").hasRole(Role.ADMIN.toString())
+						.requestMatchers("/api/v1/product-categories/{categoryId}/products").hasAnyRole(Role.SELLER.toString(), Role.ADMIN.toString())
 						.requestMatchers("/api/v1/product-categories/**").hasRole(Role.ADMIN.toString())
 						.requestMatchers("/api/v1/products/listed-products").hasRole(Role.CUSTOMER.toString())
 						.requestMatchers("/api/v1/products/{productId}/listed-products").hasRole(Role.SELLER.toString())
 						.requestMatchers("/api/v1/products/{productId}").hasRole(Role.ADMIN.toString())
 						.requestMatchers("/api/v1/cart/**").hasRole(Role.CUSTOMER.toString())
 						.requestMatchers("/api/v1/orders").hasRole(Role.CUSTOMER.toString())
+						.requestMatchers("/api/v1/incoming-orders").hasRole(Role.SELLER.toString())
 						
 				)
 				.httpBasic(Customizer.withDefaults())

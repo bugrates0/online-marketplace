@@ -87,9 +87,7 @@ public class ListedProductService {
 	}
 
 	public List<ListedProductsForAProductResponse> getAllListedProducts() {
-		System.out.println("deneme1");
 		List<Product> allProducts = productService.getAllProducts();
-		System.out.println("deneme2");
 		List<ListedProductsForAProductResponse> response = allProducts.stream()
 				.map(product -> new ListedProductsForAProductResponse(product.getProductId(), product.getProductName(),
 						listedProductRepository.findByProduct(product).stream()
@@ -98,8 +96,7 @@ public class ListedProductService {
 										listedProduct.getPrice(), listedProduct.getStockQuantity()))
 								.collect(Collectors.toList())))
 				.collect(Collectors.toList());
-		System.out.println("deneme3");
-		
+
 		return response;
 	}
 }

@@ -4,20 +4,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bugrates.online_marketplace_app.mapper.IncomingOrderMapper;
 import com.bugrates.online_marketplace_app.mapper.OrderItemMapper;
 import com.bugrates.online_marketplace_app.mapper.OrderMapper;
+import com.bugrates.online_marketplace_app.model.dto.response.IncomingOrderResponse;
 import com.bugrates.online_marketplace_app.model.dto.response.OrderItemResponse;
 import com.bugrates.online_marketplace_app.model.dto.response.OrderResponse;
 import com.bugrates.online_marketplace_app.model.entity.CartItem;
 import com.bugrates.online_marketplace_app.model.entity.Customer;
 import com.bugrates.online_marketplace_app.model.entity.Order;
 import com.bugrates.online_marketplace_app.model.entity.OrderItem;
+import com.bugrates.online_marketplace_app.model.entity.Seller;
 import com.bugrates.online_marketplace_app.repo.CartItemRepository;
 import com.bugrates.online_marketplace_app.repo.OrderItemRepository;
 import com.bugrates.online_marketplace_app.repo.OrderRepository;
@@ -72,7 +76,6 @@ public class OrderService {
 
 			cartItemRepository.deleteAllByCustomer_UserId(currentUser.getUserId());
 
-			
 			List<OrderItemResponse> orderItemResponses = new ArrayList<OrderItemResponse>();
 
 			for (OrderItem item : myOrderItems) {
@@ -88,6 +91,45 @@ public class OrderService {
 
 		throw new Exception("No product in cart !"); // TODO
 
+	}
+
+	public List<OrderResponse> getMyOrders() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		Customer currentUser = (Customer) authentication.getPrincipal();
+
+		List<Order> myOrders = orderRepository.findAllByCustomer_UserId(currentUser.getUserId());
+
+		List<OrderResponse> myOrdersResponse = myOrders.stream().map(myOrder -> {
+
+			OrderResponse orderResponse = OrderMapper.toDTO(myOrder);
+
+			return orderResponse;
+
+		}).collect(Collectors.toList());
+
+		return myOrdersResponse;
+
+	}
+
+	public List<IncomingOrderResponse> getMyIncomingOrders() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		Seller currentUser = (Seller) authentication.getPrincipal();
+
+		List<OrderItem> myIncomingOrderItems = orderItemRepository.findAllBySeller_UserId(currentUser.getUserId());
+
+		List<IncomingOrderResponse> incomingOrderResponses = myIncomingOrderItems.stream().map(myIncomingOrderItem -> {
+		
+			IncomingOrderResponse incomingOrderResponse = IncomingOrderMapper.toIncomingOrderResponse(myIncomingOrderItem);
+			
+			return incomingOrderResponse;
+			
+		}).toList();
+		
+		return incomingOrderResponses;
 	}
 
 }
