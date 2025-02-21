@@ -62,7 +62,7 @@ public class CartService {
 
 		Customer currentUser = (Customer) authentication.getPrincipal();
 
-		List<CartItem> myCartItems = cartItemRepository.findByCustomer_UserId(currentUser.getUserId());
+		List<CartItem> myCartItems = cartItemRepository.findAllByCustomer_UserId(currentUser.getUserId());
 
 		List<CartItemResponse> myCartItemsResponse = myCartItems.stream()
 				.map(myCartItem -> new CartItemResponse(myCartItem.getCartItemId(),

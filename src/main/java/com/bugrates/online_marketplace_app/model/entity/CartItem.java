@@ -1,5 +1,6 @@
 package com.bugrates.online_marketplace_app.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class CartItem {
 	@JoinColumn(name="listed_product_id")
 	private ListedProduct listedProduct;
 	
+	@Column(nullable = false)
 	@Min(1)
 	private int quantity;
 
