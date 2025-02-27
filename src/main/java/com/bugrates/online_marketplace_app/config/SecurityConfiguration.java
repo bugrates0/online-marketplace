@@ -58,7 +58,7 @@ public class SecurityConfiguration {
 						.requestMatchers("/api/v1/incoming-orders").hasRole(Role.SELLER.toString())
 						
 				)
-				.httpBasic(Customizer.withDefaults())
+				//.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

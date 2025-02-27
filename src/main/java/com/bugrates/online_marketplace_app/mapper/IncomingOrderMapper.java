@@ -19,6 +19,9 @@ public class IncomingOrderMapper {
 		response.setOrderItemId(orderItem.getOrderItemId());
 		response.setQuantity(orderItem.getQuantity());
 		response.setUnitPrice(orderItem.getUnitPrice());
+		response.setBrand(orderItem.getListedProduct().getBrand());
+		response.setProductName(orderItem.getListedProduct().getProduct().getProductName());
+		
 		
 		return response;
 	}

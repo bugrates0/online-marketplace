@@ -24,13 +24,17 @@ public class IncomingOrderResponse {
 	
 	private String customerAddress;
 	
+	private String productName;
+	
+	private String brand;
+	
 	public IncomingOrderResponse() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public IncomingOrderResponse(int orderItemId, int quantity, int unitPrice, LocalDateTime orderedAt, int customerId,
 			String customerName, String customerMailAddress, String customerPhoneNumber, String customerCity,
-			String customerAddress) {
+			String customerAddress, String productName, String brand) {
 		this.orderItemId = orderItemId;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
@@ -41,6 +45,8 @@ public class IncomingOrderResponse {
 		this.customerPhoneNumber = customerPhoneNumber;
 		this.customerCity = customerCity;
 		this.customerAddress = customerAddress;
+		this.productName = productName;
+		this.brand = brand;
 	}
 
 	public int getOrderItemId() {
@@ -121,6 +127,22 @@ public class IncomingOrderResponse {
 
 	public void setCustomerAddress(String customerAddress) {
 		this.customerAddress = customerAddress;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 	
 	
