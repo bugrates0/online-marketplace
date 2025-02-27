@@ -40,10 +40,12 @@ public class JWTService {
 
 	}
 
-	public String generateToken(String eMailAddress) {
+	public String generateToken(String eMailAddress, String role) {
 
 		Map<String, Object> claims = new HashMap<>();
 
+		claims.put("role", role);
+		
 		return Jwts.builder().claims().add(claims).subject(eMailAddress).issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + 60 * 60 * 200)).and().signWith(getKey()).compact();
 	}

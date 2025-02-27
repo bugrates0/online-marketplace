@@ -22,6 +22,7 @@ import com.bugrates.online_marketplace_app.repo.AdminRepository;
 import com.bugrates.online_marketplace_app.repo.CustomerRepository;
 import com.bugrates.online_marketplace_app.repo.SellerRepository;
 import com.bugrates.online_marketplace_app.repo.StaffDepartmentRepository;
+import com.bugrates.online_marketplace_app.repo.UserRepository;
 
 @Service
 public class UserService {
@@ -29,18 +30,22 @@ public class UserService {
 	private CustomerRepository customerRepository;
 	private SellerRepository sellerRepository;
 	private AdminRepository adminRepository;
+	private UserRepository userRepository;
 	private StaffDepartmentRepository staffDepartmentRepository;
 	private AuthenticationManager authenticationManager;
 	private JWTService jwtService;
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-	public UserService(CustomerRepository customerRepository, SellerRepository sellerRepository, AuthenticationManager authenticationManager, JWTService jwtService, AdminRepository adminRepository, StaffDepartmentRepository staffDepartmentRepository) {
+	public UserService(CustomerRepository customerRepository, SellerRepository sellerRepository,
+			AuthenticationManager authenticationManager, JWTService jwtService, AdminRepository adminRepository,
+			StaffDepartmentRepository staffDepartmentRepository, UserRepository userRepository) {
 		this.customerRepository = customerRepository;
 		this.sellerRepository = sellerRepository;
 		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
 		this.adminRepository = adminRepository;
 		this.staffDepartmentRepository = staffDepartmentRepository;
+		this.userRepository = userRepository;
 	}
 
 	public NewCustomerRequest registerAsCustomer(NewCustomerRequest newCustomerRequest) throws Exception {
@@ -61,7 +66,7 @@ public class UserService {
 			customerRepository.save(newCustomer);
 			return newCustomerRequest;
 		} catch (Exception e) {
-			throw new Exception(e.getMessage()); //TODO
+			throw new Exception(e.getMessage()); // TODO
 		}
 
 	}
@@ -85,17 +90,18 @@ public class UserService {
 			sellerRepository.save(newSeller);
 			return newSellerRequest;
 		} catch (Exception e) {
-			throw new Exception(e.getMessage()); //TODO
+			throw new Exception(e.getMessage()); // TODO
 		}
 
 	}
-	
+
 	public NewAdminRequest registerNewAdmin(NewAdminRequest newAdminRequest) throws Exception {
-		
-		StaffDepartment department = staffDepartmentRepository.findById(newAdminRequest.getDepartmentId()).orElseThrow(() -> new Exception("Department not found")); //TODO
-		
+
+		StaffDepartment department = staffDepartmentRepository.findById(newAdminRequest.getDepartmentId())
+				.orElseThrow(() -> new Exception("Department not found")); // TODO
+
 		Admin newAdmin = new Admin();
-		
+
 		newAdmin.setCreatedAt(LocalDateTime.now());
 		newAdmin.seteMailAddress(newAdminRequest.geteMailAddress());
 		newAdmin.setFirstName(newAdminRequest.getFirstName());
@@ -103,22 +109,27 @@ public class UserService {
 		newAdmin.setPassword(encoder.encode(newAdminRequest.getPassword()));
 		newAdmin.setRole(Role.ADMIN);
 		newAdmin.setStaffDepartment(department);
-		
+
 		try {
 			adminRepository.save(newAdmin);
 			return newAdminRequest;
 		} catch (Exception e) {
-			throw new Exception(e.getMessage()); //TODO
+			throw new Exception(e.getMessage()); // TODO
 		}
-		
+
 	}
 
-	public String verifyUser(UserLoginRequest userLoginRequest) {
+	public String verifyUser(UserLoginRequest userLoginRequest) throws Exception {
 		
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.geteMailAddress(), userLoginRequest.getPassword()));
 		
 		if(authentication.isAuthenticated()) {
-			return jwtService.generateToken(userLoginRequest.geteMailAddress());
+			
+			User user = userRepository.findByeMailAddress(userLoginRequest.geteMailAddress()).orElseThrow(() -> new Exception("User not found!"));
+			
+			
+			
+			return jwtService.generateToken(userLoginRequest.geteMailAddress(), user.getRole().name());
 		}
 		
 		

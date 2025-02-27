@@ -53,7 +53,7 @@ public class UserController {
 	
 	
 	@PostMapping("/login")
-	public String login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
+	public String login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws Exception {
 
 		return userService.verifyUser(userLoginRequest);
 	}
