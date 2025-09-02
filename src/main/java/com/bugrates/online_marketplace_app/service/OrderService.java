@@ -2,10 +2,11 @@ package com.bugrates.online_marketplace_app.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ import com.bugrates.online_marketplace_app.repo.OrderRepository;
 @Service
 public class OrderService {
 
+	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
 	private OrderRepository orderRepository;
 	private OrderItemRepository orderItemRepository;
 	private CartItemRepository cartItemRepository;
@@ -42,12 +45,12 @@ public class OrderService {
 
 	@Transactional
 	public OrderResponse placeOrder() throws Exception {
+		logger.info("Starting order placement process");
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
 		Customer currentUser = (Customer) authentication.getPrincipal();
 
-		// sepetteki ürünleri çek
+		logger.debug("Processing order for customer ID: {}", currentUser.getUserId());
 
 		List<CartItem> myCartItems = cartItemRepository.findAllByCustomer_UserId(currentUser.getUserId());
 
@@ -86,9 +89,11 @@ public class OrderService {
 
 			OrderResponse response = OrderMapper.toDTO(order, orderItemResponses);
 
+			logger.info("Order placed successfully with {} items for customer ID: {}", myCartItems.size(), currentUser.getUserId());
 			return response;
 		}
 
+		logger.warn("Order placement failed - no products in cart for customer ID: {}", currentUser.getUserId());
 		throw new Exception("No product in cart !"); // TODO
 
 	}
@@ -99,6 +104,8 @@ public class OrderService {
 
 		Customer currentUser = (Customer) authentication.getPrincipal();
 
+		logger.debug("Fetching orders for customer ID: {}", currentUser.getUserId());
+		
 		List<Order> myOrders = orderRepository.findAllByCustomer_UserId(currentUser.getUserId());
 
 		List<OrderResponse> myOrdersResponse = myOrders.stream().map(myOrder -> {
@@ -109,6 +116,7 @@ public class OrderService {
 
 		}).collect(Collectors.toList());
 
+		logger.info("Retrieved {} orders for customer ID: {}", myOrdersResponse.size(), currentUser.getUserId());
 		return myOrdersResponse;
 
 	}
@@ -118,6 +126,8 @@ public class OrderService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		Seller currentUser = (Seller) authentication.getPrincipal();
+
+		logger.debug("Fetching incoming orders for seller ID: {}", currentUser.getUserId());
 
 		List<OrderItem> myIncomingOrderItems = orderItemRepository.findAllBySeller_UserId(currentUser.getUserId());
 
@@ -129,6 +139,7 @@ public class OrderService {
 			
 		}).toList();
 		
+		logger.info("Retrieved {} incoming orders for seller ID: {}", incomingOrderResponses.size(), currentUser.getUserId());
 		return incomingOrderResponses;
 	}
 

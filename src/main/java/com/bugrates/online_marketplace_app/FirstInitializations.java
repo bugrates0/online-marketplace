@@ -1,11 +1,12 @@
 package com.bugrates.online_marketplace_app;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.bugrates.online_marketplace_app.model.dto.request.NewAdminRequest;
 import com.bugrates.online_marketplace_app.model.dto.request.NewStaffDepartmentRequest;
-import com.bugrates.online_marketplace_app.model.entity.StaffDepartment;
 import com.bugrates.online_marketplace_app.service.StaffDepartmentService;
 import com.bugrates.online_marketplace_app.service.UserService;
 
@@ -15,6 +16,7 @@ public class FirstInitializations implements CommandLineRunner{
 	
 	private UserService userService;
 	private StaffDepartmentService staffDepartmentService;
+	private static final Logger logger = LoggerFactory.getLogger(FirstInitializations.class);
 	
 	
 	public FirstInitializations(UserService userService, StaffDepartmentService staffDepartmentService) {
@@ -49,11 +51,11 @@ public class FirstInitializations implements CommandLineRunner{
 		try {
 			
 			initFirstDepartment();
-			
+			logger.info("Initialized first department");
 			initFirstAdmin();
-			
+			logger.info("Initialized first admin");
 		} catch (Exception e) { //TODO
-			System.out.println(e.getMessage());
+			logger.error("Error initializing first admin or department: {}", e.getMessage());
 		}
 		
 		

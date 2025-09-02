@@ -1,13 +1,13 @@
 package com.bugrates.online_marketplace_app.service;
 
-import java.time.LocalDateTime;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bugrates.online_marketplace_app.factory.UserFactory;
 import com.bugrates.online_marketplace_app.model.dto.request.NewAdminRequest;
 import com.bugrates.online_marketplace_app.model.dto.request.NewCustomerRequest;
 import com.bugrates.online_marketplace_app.model.dto.request.NewSellerRequest;
@@ -17,7 +17,6 @@ import com.bugrates.online_marketplace_app.model.entity.Customer;
 import com.bugrates.online_marketplace_app.model.entity.Seller;
 import com.bugrates.online_marketplace_app.model.entity.StaffDepartment;
 import com.bugrates.online_marketplace_app.model.entity.User;
-import com.bugrates.online_marketplace_app.model.enums.Role;
 import com.bugrates.online_marketplace_app.repo.AdminRepository;
 import com.bugrates.online_marketplace_app.repo.CustomerRepository;
 import com.bugrates.online_marketplace_app.repo.SellerRepository;
@@ -27,6 +26,8 @@ import com.bugrates.online_marketplace_app.repo.UserRepository;
 @Service
 public class UserService {
 
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	
 	private CustomerRepository customerRepository;
 	private SellerRepository sellerRepository;
 	private AdminRepository adminRepository;
@@ -34,7 +35,6 @@ public class UserService {
 	private StaffDepartmentRepository staffDepartmentRepository;
 	private AuthenticationManager authenticationManager;
 	private JWTService jwtService;
-	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
 	public UserService(CustomerRepository customerRepository, SellerRepository sellerRepository,
 			AuthenticationManager authenticationManager, JWTService jwtService, AdminRepository adminRepository,
@@ -50,22 +50,16 @@ public class UserService {
 
 	public NewCustomerRequest registerAsCustomer(NewCustomerRequest newCustomerRequest) throws Exception {
 
-		Customer newCustomer = new Customer();
+		logger.info("Registering new customer with email: {}", newCustomerRequest.geteMailAddress());
 
-		newCustomer.setAddress(newCustomerRequest.getAddress());
-		newCustomer.setCity(newCustomerRequest.getCity());
-		newCustomer.setCreatedAt(LocalDateTime.now());
-		newCustomer.seteMailAddress(newCustomerRequest.geteMailAddress());
-		newCustomer.setFirstName(newCustomerRequest.getFirstName());
-		newCustomer.setLastName(newCustomerRequest.getLastName());
-		newCustomer.setPassword(encoder.encode(newCustomerRequest.getPassword()));
-		newCustomer.setPhoneNumber(newCustomerRequest.getPhoneNumber());
-		newCustomer.setRole(Role.CUSTOMER);
+		Customer newCustomer = UserFactory.createCustomer(newCustomerRequest);
 
 		try {
 			customerRepository.save(newCustomer);
+			logger.info("Successfully registered customer: {}", newCustomerRequest.geteMailAddress());
 			return newCustomerRequest;
 		} catch (Exception e) {
+			logger.error("Failed to register customer {}: {}", newCustomerRequest.geteMailAddress(), e.getMessage());
 			throw new Exception(e.getMessage()); // TODO
 		}
 
@@ -73,23 +67,16 @@ public class UserService {
 
 	public NewSellerRequest registerAsSeller(NewSellerRequest newSellerRequest) throws Exception {
 
-		Seller newSeller = new Seller();
+		logger.info("Registering new seller with email: {}", newSellerRequest.geteMailAddress());
 
-		newSeller.setCity(newSellerRequest.getCity());
-		newSeller.setCreatedAt(LocalDateTime.now());
-		newSeller.seteMailAddress(newSellerRequest.geteMailAddress());
-		newSeller.setFirstName(newSellerRequest.getFirstName());
-		newSeller.setLastName(newSellerRequest.getLastName());
-		newSeller.setPassword(encoder.encode(newSellerRequest.getPassword()));
-		newSeller.setPhoneNumber(newSellerRequest.getPhoneNumber());
-		newSeller.setRole(Role.SELLER);
-		newSeller.setStoreAddress(newSellerRequest.getStoreAddress());
-		newSeller.setStoreName(newSellerRequest.getStoreName());
+		Seller newSeller = UserFactory.createSeller(newSellerRequest);
 
 		try {
 			sellerRepository.save(newSeller);
+			logger.info("Successfully registered seller: {}", newSellerRequest.geteMailAddress());
 			return newSellerRequest;
 		} catch (Exception e) {
+			logger.error("Failed to register seller {}: {}", newSellerRequest.geteMailAddress(), e.getMessage());
 			throw new Exception(e.getMessage()); // TODO
 		}
 
@@ -97,23 +84,22 @@ public class UserService {
 
 	public NewAdminRequest registerNewAdmin(NewAdminRequest newAdminRequest) throws Exception {
 
+		logger.info("Registering new admin with email: {}", newAdminRequest.geteMailAddress());
+
 		StaffDepartment department = staffDepartmentRepository.findById(newAdminRequest.getDepartmentId())
-				.orElseThrow(() -> new Exception("Department not found")); // TODO
+				.orElseThrow(() -> {
+					logger.error("Department not found with ID: {}", newAdminRequest.getDepartmentId());
+					return new Exception("Department not found");
+				}); // TODO
 
-		Admin newAdmin = new Admin();
-
-		newAdmin.setCreatedAt(LocalDateTime.now());
-		newAdmin.seteMailAddress(newAdminRequest.geteMailAddress());
-		newAdmin.setFirstName(newAdminRequest.getFirstName());
-		newAdmin.setLastName(newAdminRequest.getLastName());
-		newAdmin.setPassword(encoder.encode(newAdminRequest.getPassword()));
-		newAdmin.setRole(Role.ADMIN);
-		newAdmin.setStaffDepartment(department);
+		Admin newAdmin = UserFactory.createAdmin(newAdminRequest, department);
 
 		try {
 			adminRepository.save(newAdmin);
+			logger.info("Successfully registered admin: {}", newAdminRequest.geteMailAddress());
 			return newAdminRequest;
 		} catch (Exception e) {
+			logger.error("Failed to register admin {}: {}", newAdminRequest.geteMailAddress(), e.getMessage());
 			throw new Exception(e.getMessage()); // TODO
 		}
 
@@ -121,19 +107,23 @@ public class UserService {
 
 	public String verifyUser(UserLoginRequest userLoginRequest) throws Exception {
 		
+		logger.info("Attempting login for user: {}", userLoginRequest.geteMailAddress());
+		
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.geteMailAddress(), userLoginRequest.getPassword()));
 		
 		if(authentication.isAuthenticated()) {
 			
-			User user = userRepository.findByeMailAddress(userLoginRequest.geteMailAddress()).orElseThrow(() -> new Exception("User not found!"));
+			User user = userRepository.findByeMailAddress(userLoginRequest.geteMailAddress())
+				.orElseThrow(() -> {
+					logger.error("User not found during verification: {}", userLoginRequest.geteMailAddress());
+					return new Exception("User not found!");
+				});
 			
-			
-			
+			logger.info("User {} successfully authenticated with role: {}", userLoginRequest.geteMailAddress(), user.getRole());
 			return jwtService.generateToken(userLoginRequest.geteMailAddress(), user.getRole().name());
 		}
 		
-		
-		
+		logger.warn("Authentication failed for user: {}", userLoginRequest.geteMailAddress());
 		return "fail";
 	}
 
